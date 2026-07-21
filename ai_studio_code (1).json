@@ -1,0 +1,783 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "fakeip",
+        "tag": "fakeip",
+        "inet4_range": "198.18.0.1/16",
+        "inet6_range": "fc00::/18"
+      },
+      {
+        "type": "https",
+        "tag": "proxy-dns",
+        "server": "1.1.1.1",
+        "domain_resolver": "direct-dns-resolver",
+        "detour": "主代理"
+      },
+      {
+        "type": "https",
+        "tag": "proxy-dns-8",
+        "server": "8.8.8.8",
+        "domain_resolver": "direct-dns-resolver",
+        "detour": "主代理"
+      },
+      {
+        "type": "https",
+        "tag": "direct-dns",
+        "server": "dns.alidns.com",
+        "domain_resolver": "direct-dns-resolver"
+      },
+      {
+        "type": "https",
+        "tag": "direct-dns-pub",
+        "server": "doh.pub",
+        "domain_resolver": "direct-dns-resolver"
+      },
+      {
+        "type": "udp",
+        "tag": "direct-dns-resolver",
+        "server": "223.5.5.5"
+      }
+    ],
+    "rules": [
+      {
+        "rule_set": "geosite-private",
+        "server": "direct-dns-resolver"
+      },
+      {
+        "rule_set": "geosite-category-ads-all",
+        "action": "predefined",
+        "rcode": "NXDOMAIN"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "server": "direct-dns"
+      }
+    ],
+    "final": "direct-dns-resolver",
+    "strategy": "prefer_ipv4",
+    "independent_cache": true
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "address": [
+        "172.19.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "auto_route": true,
+      "strict_route": true,
+      "stack": "system"
+    },
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "127.0.0.1",
+      "listen_port": 7892
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "DIRECT"
+    },
+    {
+      "type": "block",
+      "tag": "REJECT"
+    },
+    {
+      "type": "selector",
+      "tag": "主代理",
+      "outbounds": [
+        "自动",
+        "静态",
+        "DIRECT"
+      ],
+      "default": "自动"
+    },
+    {
+      "type": "selector",
+      "tag": "自动",
+      "outbounds": [
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "AI",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "Apple",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "GitHub",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "Google",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "Microsoft",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "Netflix",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "Telegram",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "TikTok",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "Twitch",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "YouTube",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "DIRECT",
+        "DE 自动",
+        "GB 自动",
+        "HK 自动",
+        "JP 自动",
+        "KR 自动",
+        "MY 自动",
+        "NL 自动",
+        "SG 自动",
+        "TW 自动",
+        "US 自动",
+        "DE 静态",
+        "GB 静态",
+        "HK 静态",
+        "JP 静态",
+        "KR 静态",
+        "MY 静态",
+        "NL 静态",
+        "SG 静态",
+        "TW 静态",
+        "US 静态"
+      ],
+      "default": "主代理"
+    },
+    {
+      "type": "selector",
+      "tag": "DE 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "GB 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "HK 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "JP 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "KR 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "MY 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "NL 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "SG 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "TW 静态",
+      "outbounds": []
+    },
+    {
+      "type": "selector",
+      "tag": "US 静态",
+      "outbounds": []
+    },
+    {
+      "type": "urltest",
+      "tag": "DE 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "GB 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "HK 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "JP 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "KR 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "MY 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "NL 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "SG 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "TW 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "urltest",
+      "tag": "US 自动",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 100,
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "inbound": [
+          "tun-in",
+          "mixed-in"
+        ],
+        "action": "resolve",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "inbound": [
+          "tun-in",
+          "mixed-in"
+        ],
+        "action": "sniff",
+        "timeout": "1s"
+      },
+      {
+        "rule_set": "geosite-private",
+        "outbound": "DIRECT"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "DIRECT"
+      },
+      {
+        "rule_set": "geosite-category-ads-all",
+        "outbound": "REJECT"
+      },
+      {
+        "rule_set": "geosite-youtube",
+        "outbound": "YouTube"
+      },
+      {
+        "rule_set": "geosite-twitch",
+        "outbound": "Twitch"
+      },
+      {
+        "rule_set": "geosite-tiktok",
+        "outbound": "TikTok"
+      },
+      {
+        "rule_set": "geosite-telegram",
+        "outbound": "Telegram"
+      },
+      {
+        "rule_set": "geosite-google",
+        "outbound": "Google"
+      },
+      {
+        "rule_set": "geosite-category-ai-!cn",
+        "outbound": "AI"
+      },
+      {
+        "rule_set": "geosite-netflix",
+        "outbound": "Netflix"
+      },
+      {
+        "rule_set": "geosite-apple",
+        "outbound": "Apple"
+      },
+      {
+        "rule_set": "geosite-github",
+        "outbound": "GitHub"
+      },
+      {
+        "rule_set": "geosite-microsoft",
+        "outbound": "Microsoft"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "outbound": "DIRECT"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "outbound": "DIRECT"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-private",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-private.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-ads-all",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-youtube",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-youtube.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-twitch",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-twitch.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-tiktok",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-tiktok.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-telegram",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-telegram.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-google",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-ai-!cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ai-!cn.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-netflix",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-netflix.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-apple",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-apple.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-github",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-github.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-microsoft",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-microsoft.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "download_detour": "DIRECT",
+        "update_interval": "1d"
+      }
+    ],
+    "final": "主代理",
+    "auto_detect_interface": true,
+    "default_domain_resolver": "direct-dns-resolver"
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "path": "cache.db",
+      "store_fakeip": true
+    },
+    "clash_api": {
+      "default_mode": "rule",
+      "external_controller": "127.0.0.1:9090"
+    }
+  }
+}
