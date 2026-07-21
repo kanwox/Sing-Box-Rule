@@ -1,0 +1,853 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "experimental": {
+    "clash_api": {
+      "default_mode": "rule",
+      "external_controller": "127.0.0.1:9090"
+    },
+    "cache_file": {
+      "enabled": true,
+      "store_fakeip": true
+    }
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "tag": "proxy-dns",
+        "server": "1.1.1.1",
+        "domain_resolver": "direct-dns-resolver",
+        "detour": "主代理"
+      },
+      {
+        "type": "https",
+        "tag": "direct-dns",
+        "server": "dns.alidns.com",
+        "domain_resolver": "direct-dns-resolver"
+      },
+      {
+        "type": "udp",
+        "tag": "direct-dns-resolver",
+        "server": "223.5.5.5"
+      },
+      {
+        "type": "fakeip",
+        "tag": "fakeip",
+        "inet4_range": "198.18.0.1/16",
+        "inet6_range": "fc00::/18"
+      }
+    ],
+    "rules": [
+      {
+        "rule_set": "geosite-private",
+        "server": "direct-dns-resolver"
+      },
+      {
+        "rule_set": "geosite-category-ads-all",
+        "action": "predefined",
+        "rcode": "NXDOMAIN"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "server": "direct-dns"
+      }
+    ],
+    "final": "direct-dns-resolver",
+    "strategy": "prefer_ipv4",
+    "independent_cache": true
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "address": [
+        "172.19.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "auto_route": true,
+      "strict_route": true,
+      "stack": "system"
+    },
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "127.0.0.1",
+      "listen_port": 7892
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "网站|地址|剩余|过期|时间|有效|套餐|官网|流量|到期|订阅|群|客服|欢迎|加入|Expire|Traffic|Reset|Date"
+          ]
+        }
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "10m",
+      "tolerance": 50
+    },
+    {
+      "tag": "HongKong",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇭🇰|HK|hk|香港|HongKong"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "TaiWan",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇹🇼|TW|tw|台湾|臺灣|台|Taiwan"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Singapore",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇸🇬|SG|sg|新加坡|狮|Singapore"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Japan",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇯🇵|JP|jp|日本|日|Japan"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Korea",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇰🇷|KR|kr|韩国|韓|首尔|Korea"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Malaysia",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇲🇾|MY|my|马来西亚|Malaysia"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Netherlands",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇳🇱|NL|nl|荷兰|荷|Netherlands|Amsterdam"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "UnitedKingdom",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇬🇧|UK|GB|uk|gb|英国|英|United Kingdom|London"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Germany",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇩🇪|DE|de|德国|德|Germany|Frankfurt"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "America",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇺🇸|US|us|美国|美|United States"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "France",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇫🇷|FR|fr|法国|France|Paris"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "India",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇮🇳|IN|in|印度|India|Mumbai"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Thailand",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇹🇭|TH|th|泰国|Thailand|Bangkok"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Vietnam",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇻🇳|VN|vn|越南|Vietnam"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Philippines",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇵🇭|PH|ph|菲律宾|Philippines|Manila"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Bangladesh",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇧🇩|BD|bd|孟加拉|Bangladesh|Dhaka"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Others",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "🇭🇰|HK|hk|香港|HongKong|🇹🇼|TW|tw|台湾|臺灣|台|Taiwan|🇸🇬|SG|sg|新加坡|狮|Singapore|🇯🇵|JP|jp|日本|日|Japan|🇰🇷|KR|kr|韩国|韓|首尔|Korea|🇲🇾|MY|my|马来西亚|Malaysia|🇳🇱|NL|nl|荷兰|荷|Netherlands|Amsterdam|🇬🇧|UK|GB|uk|gb|英国|英|United Kingdom|London|🇩🇪|DE|de|德国|德|Germany|Frankfurt|🇺🇸|US|us|美国|美|United States|🇫🇷|FR|fr|法国|France|Paris|🇮🇳|IN|in|印度|India|Mumbai|🇹🇭|TH|th|泰国|Thailand|Bangkok|🇻🇳|VN|vn|越南|Vietnam|🇵🇭|PH|ph|菲律宾|Philippines|Manila|🇧🇩|BD|bd|孟加拉|Bangladesh|Dhaka"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "静态",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "网站|地址|剩余|过期|时间|有效|套餐|官网|流量|到期|订阅|群|客服|欢迎|加入|Expire|Traffic|Reset|Date"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "主代理",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "静态",
+        "direct"
+      ],
+      "default": "auto"
+    },
+    {
+      "tag": "AI",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "Apple",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "GitHub",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "Google",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "Microsoft",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "Netflix",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "Telegram",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "TikTok",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "Twitch",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    },
+    {
+      "tag": "YouTube",
+      "type": "selector",
+      "outbounds": [
+        "主代理",
+        "静态",
+        "direct",
+        "HongKong",
+        "TaiWan",
+        "Singapore",
+        "Japan",
+        "Korea",
+        "Malaysia",
+        "Netherlands",
+        "UnitedKingdom",
+        "Germany",
+        "America",
+        "France",
+        "India",
+        "Thailand",
+        "Vietnam",
+        "Philippines",
+        "Bangladesh",
+        "Others"
+      ],
+      "default": "主代理"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "inbound": [
+          "tun-in",
+          "mixed-in"
+        ],
+        "action": "resolve",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "inbound": [
+          "tun-in",
+          "mixed-in"
+        ],
+        "action": "sniff",
+        "timeout": "1s"
+      },
+      {
+        "rule_set": "geosite-private",
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "geosite-category-ads-all",
+        "action": "predefined",
+        "rcode": "NXDOMAIN"
+      },
+      {
+        "rule_set": "geosite-youtube",
+        "outbound": "YouTube"
+      },
+      {
+        "rule_set": "geosite-twitch",
+        "outbound": "Twitch"
+      },
+      {
+        "rule_set": "geosite-tiktok",
+        "outbound": "TikTok"
+      },
+      {
+        "rule_set": "geosite-telegram",
+        "outbound": "Telegram"
+      },
+      {
+        "rule_set": "geosite-google",
+        "outbound": "Google"
+      },
+      {
+        "rule_set": "geosite-category-ai-!cn",
+        "outbound": "AI"
+      },
+      {
+        "rule_set": "geosite-netflix",
+        "outbound": "Netflix"
+      },
+      {
+        "rule_set": "geosite-apple",
+        "outbound": "Apple"
+      },
+      {
+        "rule_set": "geosite-github",
+        "outbound": "GitHub"
+      },
+      {
+        "rule_set": "geosite-microsoft",
+        "outbound": "Microsoft"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "outbound": "direct"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-private",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-private.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-youtube",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-youtube.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-twitch",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-twitch.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-tiktok",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-tiktok.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-telegram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-telegram.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-google",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-category-ai-!cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ai-!cn.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-netflix",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-netflix.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-apple",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-apple.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-github",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-github.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-microsoft",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-microsoft.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "download_detour": "direct",
+        "update_interval": "1d"
+      }
+    ],
+    "final": "主代理",
+    "auto_detect_interface": true,
+    "default_domain_resolver": "direct-dns-resolver"
+  }
+}
